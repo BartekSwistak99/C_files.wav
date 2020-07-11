@@ -333,5 +333,5 @@ int16_t generate_tan(double frequency, double time)
 int16_t generate_sinus2(double frequency, double time)
 {
     double result = sin(time * frequency * 2 * 3.1415) + tan(time * 3 * frequency * 2 * 3.1415);
-    return result * 100;
+    return result * 10;
 }
