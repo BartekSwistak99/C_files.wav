@@ -294,18 +294,18 @@ enum errors_t WAV_add_data(struct WAVE_file_t *wav_file, uint8_t *data, int buff
     wav_file->WAVE_data.audioData = data;
     return success;
 }
-enum errors_t generate_sound(struct WAVE_file_t *wav_file, int time, int16_t (*generate_signal)(double, double), double frequency)
+enum errors_t generate_sound(struct WAVE_file_t *wav_file, int time, uint16_t (*generate_signal)(double, double, uint16_t), double frequency, uint16_t Amplitude)
 {
     if (!wav_file || time <= 0 || !generate_signal)
         return incorrect_args;
     uint8_t *data = (uint8_t *)malloc(sizeof(uint8_t) * time * wav_file->WAVE_fmt.sampleRate * wav_file->WAVE_fmt.blockAlign);
     if (!data)
         return allocation_error;
-    int16_t *temp_array = (int16_t *)data;
+    uint16_t *temp_array = (uint16_t *)data;
     double timeStep = 0.0;
     for (int i = 0; i < time * wav_file->WAVE_fmt.sampleRate; i++)
     {
-        double temp = generate_signal(frequency, timeStep);
+        double temp = generate_signal(frequency, timeStep, Amplitude);
         *(temp_array + i) = temp;
         timeStep += 1.0 / (wav_file->WAVE_fmt.sampleRate);
     }
@@ -314,24 +314,38 @@ enum errors_t generate_sound(struct WAVE_file_t *wav_file, int time, int16_t (*g
         return error;
     return success;
 }
-int16_t generate_sinus(double frequency, double time)
+uint16_t generate_sinus(double frequency, double time, uint16_t Amplitude)
 {
-    double result = sin(time * frequency * 2 * 3.1415);
-    return result * 1000;
+    if (Amplitude > 100)
+        Amplitude = 100;
+    return Amplitude * (100 * sin(time * frequency * 2 * 3.1415) + 100);
 }
-int16_t generate_white_noise(double frequency, double time)
+uint16_t generate_white_noise(double frequency, double time, uint16_t Amplitude)
 {
+    if (Amplitude > 100)
+        Amplitude = 100;
     srand(clock());
-    double result = rand() % 1000;
+    double result = Amplitude * (rand() % 100);
     return result;
 }
-int16_t generate_tan(double frequency, double time)
+
+uint16_t generate_sinus2(double frequency, double time, uint16_t Amplitude)
 {
-    double result = tan(time * frequency * 2 * 3.1415);
-    return result * 100;
+    if (Amplitude > 100)
+        Amplitude = 100;
+    return Amplitude * (100 * sin(time * frequency * 2 * 3.1415) + 100) * ((25 * sin(time * 5 * frequency * 2 * 3.1415) + 100));
 }
-int16_t generate_sinus2(double frequency, double time)
+uint16_t generate_square(double frequency, double time, uint16_t Amplitude)
 {
-    double result = sin(time * frequency * 2 * 3.1415) + tan(time * 3 * frequency * 2 * 3.1415);
-    return result * 10;
+    if (Amplitude > 100)
+        Amplitude = 100;
+    double sin_res = sin(time * frequency * 2 * 3.1415);
+    sin_res = (sin_res > 0 ? 3 : 1);
+    return Amplitude * 100 * sin_res;
+}
+uint16_t generate_saw(double frequency, double time, uint16_t Amplitude)
+{
+    if (Amplitude > 100)
+        Amplitude = 100;
+    return Amplitude * (100 * (frequency * 3.1415 * fmod(time, 1.0 / frequency) - (3.1415 / 2)));
 }

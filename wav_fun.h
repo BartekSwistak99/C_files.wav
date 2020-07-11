@@ -73,9 +73,13 @@ enum errors_t load_data(struct WAVE_data_t *, FILE *);
 enum errors_t save_WAV(const char *, struct WAVE_file_t *);
 enum errors_t generate_WAV_header(struct WAVE_file_t **, uint16_t, uint32_t, uint16_t);
 enum errors_t WAV_add_data(struct WAVE_file_t *, uint8_t *, int);
-enum errors_t generate_sound(struct WAVE_file_t *, int, int16_t (*)(double,double), double frequency);
-int16_t generate_sinus(double,double);
-int16_t generate_sinus2(double,double);
-int16_t generate_white_noise(double,double);
-int16_t generate_tan(double,double);
+enum errors_t generate_sound(struct WAVE_file_t *, int, uint16_t (*)(double, double, uint16_t), double, uint16_t);
+uint16_t generate_sinus(double, double, uint16_t);
+uint16_t generate_square(double, double, uint16_t);
+uint16_t generate_saw(double, double, uint16_t);
+
+
+uint16_t generate_sinus2(double, double, uint16_t);
+uint16_t generate_white_noise(double, double, uint16_t);
+uint16_t generate_tan(double, double, uint16_t);
 #endif
