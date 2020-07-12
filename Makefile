@@ -1,9 +1,9 @@
 ProgramName=loadWAV
 CCFLAGS= -g -Wall -pedantic
 CC=gcc
-LDFLAGS= -lm `sdl2-config --cflags --libs`  #linker flags defined for later usage
-src=$(wildcard *.c) #get all files .cpp
-obj=$(patsubst %.c,%.o,$(src)) #change *.cpp strings to *.o
+LDFLAGS= -lm `sdl2-config --cflags --libs` 
+src=$(wildcard *.c) #get all files .c
+obj=$(patsubst %.c,%.o,$(src)) #change *.c strings to *.o
 
 all: $(ProgramName)
 
